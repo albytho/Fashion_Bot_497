@@ -14,12 +14,14 @@ from io import BytesIO
 from operator import itemgetter
 from flask import Flask, request, redirect, url_for
 from server_startup import startup
+from flask_cors import CORS
 
 
 img2vec = Img2Vec()
 UPLOAD_FOLDER = 'query'
 ALLOWED_EXTENSIONS = set(['jpg'])
 app = Flask(__name__)
+CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # The Deep Learning part that returns a list of clothing with their info
@@ -35,8 +37,6 @@ def upload_file(gender):
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
-            print("FILEEE SENTTTTT")
-            print(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], "query_image.jpg"))
 
             # Go through each of the clothing vectors in the database
@@ -53,8 +53,9 @@ def upload_file(gender):
             else:
                 list_of_clothing_info = male_list_of_clothing_info + female_list_of_clothing_info
 
+            print(list_of_clothing_info)
             for clothing in tqdm(list_of_clothing_info):
-                element = clothing
+                element = clothing.copy()
                 element["similarity"] = cosine_similarity(query_vec.reshape((1, -1)), element["feature_vec"].reshape((1, -1)))[0][0]
                 element.pop('feature_vec', None)
                 list_of_clothing_info_with_similarity.append(element)
@@ -64,7 +65,6 @@ def upload_file(gender):
             for i in sorted_list:
                 i.pop('similarity',None)
             
-            print(sorted_list)
             json_results = {}
             json_results["results"] = sorted_list
             return flask.jsonify(**json_results)
