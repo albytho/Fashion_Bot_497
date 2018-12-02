@@ -9,13 +9,15 @@ import os.path
 import json
 from pprint import pprint
 import requests
+import flask
 from io import BytesIO
 from operator import itemgetter
 from flask import Flask, request, redirect, url_for
 from server_startup import startup
 
+
 img2vec = Img2Vec()
-UPLOAD_FOLDER = '/query'
+UPLOAD_FOLDER = 'query'
 ALLOWED_EXTENSIONS = set(['jpg'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -33,6 +35,8 @@ def upload_file(gender):
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
+            print("FILEEE SENTTTTT")
+            print(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], "query_image.jpg"))
 
             # Go through each of the clothing vectors in the database
@@ -57,7 +61,13 @@ def upload_file(gender):
 
 
             sorted_list = sorted(list_of_clothing_info_with_similarity, key=itemgetter('similarity'), reverse=True)
-            return sorted_list
+            for i in sorted_list:
+                i.pop('similarity',None)
+            
+            print(sorted_list)
+            json_results = {}
+            json_results["results"] = sorted_list
+            return flask.jsonify(**json_results)
     else:
         return "THIS IS A GET REQUEST"
 
