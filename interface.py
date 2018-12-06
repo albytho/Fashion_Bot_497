@@ -53,7 +53,6 @@ def upload_file(gender):
             else:
                 list_of_clothing_info = male_list_of_clothing_info + female_list_of_clothing_info
 
-            print(list_of_clothing_info)
             for clothing in tqdm(list_of_clothing_info):
                 element = clothing.copy()
                 element["similarity"] = cosine_similarity(query_vec.reshape((1, -1)), element["feature_vec"].reshape((1, -1)))[0][0]
@@ -64,9 +63,11 @@ def upload_file(gender):
             sorted_list = sorted(list_of_clothing_info_with_similarity, key=itemgetter('similarity'), reverse=True)
             for i in sorted_list:
                 i.pop('similarity',None)
+
+            top_20 = sorted_list[:20]
             
             json_results = {}
-            json_results["results"] = sorted_list
+            json_results["results"] = top_20
             return flask.jsonify(**json_results)
     else:
         return "THIS IS A GET REQUEST"
