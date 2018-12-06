@@ -6,7 +6,14 @@ class App extends Component {
 
   state = {
     selectedFile: null,
-    results: []
+    results: [],
+    gender: 'X'
+  }
+
+  handleGenderChange = event => {
+    this.setState({
+      gender: event.target.value
+    })
   }
 
   fileSelectedHandler = event => {
@@ -23,7 +30,7 @@ class App extends Component {
       headers: {'Access-Control-Allow-Origin': '*'}
     };
 
-    axios.post('http://localhost:5000/query/M', fd, config)
+    axios.post('http://localhost:5000/query/'.concat(this.state.gender), fd, config)
       .then(res => {
         console.log(res)
         this.setState({
@@ -36,6 +43,11 @@ class App extends Component {
     return (
       <div className="App">
         <input type="file" onChange={this.fileSelectedHandler}/>
+        <select value={this.state.gender} onChange={this.handleGenderChange}>
+          <option value="M">Male</option>
+          <option value="F">Female</option>
+          <option value="X">Either</option>
+        </select>
         <button onClick={this.fileUploadHandler}>Upload</button>
       {this.state.results.map(item =>
         (<div>
