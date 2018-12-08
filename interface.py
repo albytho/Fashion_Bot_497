@@ -32,8 +32,8 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # A route to return all of the available entries in our catalog.
-@app.route('/query/<gender>', methods=['GET', 'POST'])
-def upload_file(gender):
+@app.route('/query/<gender>/<minBudget>/<maxBudget>', methods=['GET', 'POST'])
+def upload_file(gender,minBudget,maxBudget):
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
@@ -64,7 +64,16 @@ def upload_file(gender):
             for i in sorted_list:
                 i.pop('similarity',None)
 
-            top_20 = sorted_list[:20]
+            refined_list = []
+            for clothing in sorted_list:
+                element = clothing.copy()
+                if len(element['price']) == 0:
+                    element['price'] = '0'
+                element['price'] = element['price'].replace("$", "")
+                if (float(element['price']) <= float(maxBudget)) and (float(element['price']) >= float(minBudget)):
+                    refined_list.append(element)
+
+            top_20 = refined_list[:20]
             
             json_results = {}
             json_results["results"] = top_20
