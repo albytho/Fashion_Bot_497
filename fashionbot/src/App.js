@@ -62,28 +62,37 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <input type="file" onChange={this.fileSelectedHandler}/>
-
-        <select value={this.state.gender} onChange={this.handleGenderChange}>
-          <option value="M">Male</option>
-          <option value="F">Female</option>
-          <option value="X">Either</option>
-        </select>
-
-        <input type="number" placeholder="Min Budget" onChange={this.handleMinMoneyChange}/>
-        <input type="number" placeholder="Max Budget" onChange={this.handleMaxMoneyChange}/>
-
-        <button onClick={this.fileUploadHandler}>Upload</button>
-      {this.state.results.map(item =>
-        (<div>
-          <a href={item.url}>
-            <img src={item.images} alt="pic"/>
-          </a>
-          {item.price}
-          {item.product_brand}
-          {item.product_name}
-        </div>),
-      )}
+        <img class="header" src="heading.png" alt="Fasion Bot Header"></img>
+        <div class="sidebar">
+          <img class="subheader" src="image.jpeg" alt="Fasion Bot Header"></img>
+          <label class="file_container">
+            <input type="file" class="inputfile" onChange={this.fileSelectedHandler}/>
+          </label>
+          <img class="subheader" src="gender.jpeg" alt="Fasion Bot Header"></img>
+          <select value={this.state.gender} onChange={this.handleGenderChange}>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+            <option value="X">Either</option>
+          </select>
+          <img class="subheader" src="price.jpeg" alt="Fasion Bot Header"></img>
+          <input type="number" placeholder="Min Budget" onChange={this.handleMinMoneyChange}/>
+          <input class="smt" type="number" placeholder="Max Budget" onChange={this.handleMaxMoneyChange}/>
+          <button onClick={this.fileUploadHandler}>Search</button>
+        </div>
+        <div class="images">
+          {this.state.results.map(item =>
+            (<div>
+              <a href={item.url}>
+                <img src={item.images} alt="pic" class="img-thumbnail"/>
+              </a>
+              <p>
+                {"$" + item.price + " "}
+                <p class="caps">{item.product_brand}</p>
+                <p class="low">{item.product_name}</p>
+              </p>
+            </div>),
+          )}
+        </div>
       </div>
     );
   }
