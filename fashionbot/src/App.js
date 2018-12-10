@@ -75,8 +75,8 @@ class App extends Component {
             <option value="X">Either</option>
           </select>
           <img class="subheader" src="price.jpeg" alt="Fasion Bot Header"></img>
-          <input type="number" placeholder="Min Budget" onChange={this.handleMinMoneyChange}/>
-          <input class="smt" type="number" placeholder="Max Budget" onChange={this.handleMaxMoneyChange}/>
+          <input type="number" min="0" placeholder="Min Budget" onChange={this.handleMinMoneyChange}/>
+          <input class="smt" type="number" min="0" placeholder="Max Budget" onChange={this.handleMaxMoneyChange}/>
           <button onClick={this.fileUploadHandler}>Search</button>
         </div>
         <div class="images">
